@@ -43,10 +43,10 @@ However, the most interesting and important feature is **Dual mode**.
 
 Listen:
 
-- the <a href="Docs/Standard Modes.mp3">Standard Modes</a>
-- the <a href="Docs/AltModes.mp3">Alt Modes</a>
-- some simple <a href="Docs/Simple Dual.mp3">dual arpeggios</a>
-- a more complex <a href="https://raw.githubusercontent.com/kallikak/Sharp/blob/main/Docs/Dual Demo.mp3">dual arpeggio demo</a> (still comes from just playing a few chords).
+- the <a href="http://thewessens.net/Sharp/Standard Modes.mp3">Standard Modes</a>
+- the <a href="http://thewessens.net/Sharp/AltModes.mp3">Alt Modes</a>
+- some simple <a href="http://thewessens.net/Sharp/Simple Dual.mp3">dual arpeggios</a>
+- a more complex <a href="http://thewessens.net/Sharp/Dual Demo.mp3">dual arpeggio demo</a> (still comes from just playing a few chords).
 
 Finally, here are some examples of the modes and variations as notation.
 
