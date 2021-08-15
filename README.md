@@ -11,6 +11,7 @@ Firmware source and schematics for the Sharp Dual Arpeggiator
 This is a Teensy 4 based Arpeggiator with a number of special features:
 
 - Multiple basic modes
+  - Range of 1 to 4 octaves
   - Standard up, down and up+down
   - In, out and in-out 
   - Random and shuffle
