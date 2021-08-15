@@ -1,0 +1,53 @@
+X: 1
+T: Arpeggio Modes
+T: (Holding G2-B2-D3, set to 4 octaves, sorted and no timebase constraint)
+K: C
+M: none
+P:Up
+G,,B,,D, G,B,D GBd gbd' |
+P:Down
+d'bg dBG DB,G, D,B,,G,, | 
+P:Up + Down
+G,,B,,D, G,B,D GBd gbd' bgd BGD B,G,D,B,,|
+P:In (alternate notes while moving inward from the extremes)
+G,,d'B,, bD,g G,dB, BDG |
+P:Out (alternate notes while moving outward from the middle)
+GDB B,dG, gD,b | B,,d'G,, |
+P:In + Out
+G,,d'B,, bD,g G,dB, BDG DBB, dG,g D,bB,,d' |
+P:Random (notes chosen randomly from the held notes over all octaves)
+G,,DB, gB,d G,BD, GbD | 
+P:Shuffle (randomly rearrange all notes, and maintain the new arrangement until the notes change)
+G,,DB, gB,d G,BD, GbD | 
+
+X:2
+K: C
+M: none
+T: Set timebase to 2, 3 or 4 to enforce a specific multiple
+P:Up + Down [Timebase 3]
+G,,B,,D, G,B,D GBd gbd' bgd BGD B,G,D, |
+P:Up + Down [Timebase 4]
+G,,B,,D,G, B,DGB dgbd' bgdB GDB,G, |
+
+X: 3
+T: Variations can be applied to any mode
+T: (Using `Up' mode and a 4 octave range to illustrate)
+K: C
+M: none
+P:Repeat (repeat every note)
+G,,G,,B,,B,,D,D, G,G,B,B,DD GGBBdd ggbbd'd' |
+P:Repeat-2 (repeat every second note)
+G,,B,,B,, D,G,G, B,DD GBB dgg bd'd' |
+P:Repeat-3 (repeat every second note after every third note)
+G,,B,,D,B,, G,B,DB, GBdB gbd'b |
+P:Octaves (play all octaves for the current note before moving to the next note)
+G,,G,Gg B,,B,Bb D,Ddd' |
+P:Ratchet-F (play the first note of each group twice at double speed)
+G,,/G,,/B,,D, G,/G,/B,D G/G/Bd g/g/bd' |
+P:Ratchet-L (play the last note of each group twice at double speed)
+G,,B,,D,/D,/ G,B,D/D/ GBd/d/ gbd'/d'/ |
+P:Walk (small random chance of note repeat or reverse step)
+G,,B,,D, B,,D,G, G,B,D GDG DGB dgb gbd' |
+P:Chord (play up to 3 notes from the group together, but at half speed)
+[G,,B,,D,]2 [G,B,D]2 [GBd]2 [gbd']2 |
+
