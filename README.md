@@ -47,6 +47,7 @@ Listen:
 - the <a href="Docs/AltModes.mp3">Alt Modes</a>
 - some simple <a href="Docs/Simple Dual.mp3">dual arpeggios</a>
 - a more complex <a href="Docs/Dual Demo.mp3">dual arpeggio demo</a> (still comes from just playing a few chords).
+- [dual arpeggio demo](Docs/Dual Demo.mp3)
 
 Finally, here are some examples of the modes and variations as notation.
 
