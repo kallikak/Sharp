@@ -21,6 +21,7 @@ This is a Teensy 4 based Arpeggiator with a number of special features:
   - Double play at double speed the first or last note in the pattern (ratchet)
   - Random walk (small random chance of stepping backwards each step)
   - Half speed chord mode (up to 3 notes in the chord - highest, lowest and one in the middle)
+  - Swing beat
 - Rounding to a timebase of 2, 3 or 4 to ensure the notes played in a cycle fit to a desired multiple
 - Latch notes so they don't need to be held down
 - Cycle the pattern notes in either note order or played order
