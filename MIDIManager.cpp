@@ -61,10 +61,12 @@ void setDemoSequence();
 
 extern bool settingsplit;
 
-#define CV_NOTE A22
-#define CV_CTRL A21
-#define CV_GATE 27
-#define CV_CLK  26
+#define CV_NOTE1 A22
+#define CV_NOTE2 A21
+#define CV_GATE1 27
+#define CV_GATE2 26
+//#define CV_CLK 32
+#define CV_CLK 10
 #define GATE_HIGH 568  // approximately 5V
 
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -92,9 +94,11 @@ void handlePitchBend(byte channel, int bend)
 
 void setupMIDI()
 {
-  pinMode(CV_GATE, OUTPUT);
+  pinMode(CV_GATE1, OUTPUT);
+  pinMode(CV_GATE2, OUTPUT);
   pinMode(CV_CLK, OUTPUT);
-  digitalWrite(CV_GATE, 0);
+  digitalWrite(CV_GATE1, 0);
+  digitalWrite(CV_GATE2, 0);
   digitalWrite(CV_CLK, 0);
   
   MIDI.begin(1);
@@ -170,28 +174,28 @@ void sendNoteOn(byte channel, byte note, byte velocity)
   {
     if (state.common.active)
     {
-      analogWrite(channel == 1 ? CV_NOTE : CV_CTRL, cv);
-      digitalWrite(channel == 1 ? CV_GATE : CV_CLK, 1);
+      analogWrite(channel == 1 ? CV_NOTE1 : CV_NOTE2, cv);
+      digitalWrite(channel == 1 ? CV_GATE1 : CV_GATE2, 1);
     }
     else
     {
-      analogWrite(CV_NOTE, cv);
-      digitalWrite(CV_GATE, 1);
-      analogWrite(CV_CTRL, cv);
-      digitalWrite(CV_CLK, 1); 
+      analogWrite(CV_NOTE1, cv);
+      digitalWrite(CV_GATE1, 1);
+      analogWrite(CV_NOTE2, cv);
+      digitalWrite(CV_NOTE2, 1); 
     }
   }
   else
   {
     if (curcommon->split == 2 && channel == 2)
     {
-      analogWrite(CV_CTRL, cv);
-      digitalWrite(CV_CLK, 1);
+      analogWrite(CV_NOTE2, cv);
+      digitalWrite(CV_GATE2, 1);
     }
     else
     {
-      analogWrite(CV_NOTE, cv);
-      digitalWrite(CV_GATE, 1);
+      analogWrite(CV_NOTE1, cv);
+      digitalWrite(CV_GATE1, 1);
     }
   }
 }
@@ -226,23 +230,23 @@ void sendNoteOff(byte channel, byte note, byte velocity)
   {
     if (state.common.active)
     {
-      digitalWrite(channel == 1 ? CV_GATE : CV_CLK, 0);
+      digitalWrite(channel == 1 ? CV_GATE1 : CV_GATE2, 0);
     }
     else
     {
-      digitalWrite(CV_GATE, 0);
-      digitalWrite(CV_CLK, 0); 
+      digitalWrite(CV_GATE1, 0);
+      digitalWrite(CV_GATE2, 0); 
     }
   }
   else
   {
     if (curcommon->split == 2 && channel == 2)
     {
-      digitalWrite(CV_CLK, 0);
+      digitalWrite(CV_GATE2, 0);
     }
     else
     {
-      digitalWrite(CV_GATE, 0);
+      digitalWrite(CV_GATE1, 0);
     }
   }
 }
@@ -267,6 +271,12 @@ void sendControlChange(byte channel, byte number, byte value)
   MIDI.sendControlChange(number, value, channel);
   usbMIDI.sendControlChange(number, value, channel);
   usbmidi.sendControlChange(number, value, channel);
+}
+
+void sendClock(bool state)
+{
+  // FIXME add MIDI clock support (will need 24 clocks per beat)
+  digitalWrite(CV_CLK, state ? 1 : 0); 
 }
 
 void handlestoppednotes()
@@ -374,8 +384,8 @@ void handleNoteOff(byte channel, byte pitch, byte velocity)
         handleupdate();
       else if (tracker.getheldcount(false) == 0)
       {
-        digitalWrite(CV_GATE, 0);
-        digitalWrite(CV_CLK, 0);
+        digitalWrite(CV_GATE1, 0);
+        digitalWrite(CV_GATE2, 0);
       }
     }
   }
@@ -415,8 +425,8 @@ void stopallnotes(bool allsound)
 
 void stopcv()
 {
-  digitalWrite(CV_GATE, 0);
-  digitalWrite(CV_CLK, 0); 
+  digitalWrite(CV_GATE1, 0);
+  digitalWrite(CV_GATE2, 0); 
 }
 
 void checkMIDI(long curClock)

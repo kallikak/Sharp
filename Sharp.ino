@@ -45,6 +45,12 @@
 #define PANIC_BUTTON 20
 Bounce panicDebouncer = Bounce();
 
+#define SWAP_BUTTON 16
+Bounce swapDebouncer = Bounce();
+
+#define RETRIGGER_BUTTON 12
+Bounce retriggerDebouncer = Bounce();
+
 notetracker tracker;
 arpeggiator arpeggiators[] = { arpeggiator(&tracker, 0), arpeggiator(&tracker, 1) };
 
@@ -135,7 +141,6 @@ bool settingsplit = false;
 bool settingmul = false;
 bool settingdiv = false;
 bool settingdevmode = false;
-bool settingeditmode = false;
 
 bool updateFactor[] = {false, false};
 float updateValue[] = {1, 1};
@@ -185,6 +190,9 @@ void swapArps()
   arpstate temp = state.arp[0]; 
   state.arp[0] = state.arp[1];
   state.arp[1] = temp;
+  arpeggiators[0].updatenotestoplay(&state);
+  arpeggiators[1].updatenotestoplay(&state);
+  showState();
 }
 
 void setupEncoders()
@@ -288,9 +296,6 @@ void checkEncoders()
             case DEV_MODE:
               settingdevmode = !settingdevmode;
               break;
-            case EDIT_MODE:
-              settingeditmode = !settingeditmode;
-              break;
           }
           showModeState();
           break;
@@ -306,9 +311,9 @@ void checkEncoders()
       {  
         int d = pos > e->pos ? -1 : 1;
         e->pos = pos;
-        if (settingdevmode || settingmul || settingdiv || settingeditmode)
+        if (settingdevmode || settingmul || settingdiv)
         {
-          settingdevmode = settingmul = settingdiv = settingeditmode = false;
+          settingdevmode = settingmul = settingdiv = false;
         }
         switch (i)
         {
@@ -396,6 +401,14 @@ void setupButtons()
   pinMode(PANIC_BUTTON, INPUT_PULLUP);
   panicDebouncer.attach(PANIC_BUTTON);
   panicDebouncer.interval(50);
+  
+  pinMode(SWAP_BUTTON, INPUT_PULLUP);
+  swapDebouncer.attach(SWAP_BUTTON);
+  swapDebouncer.interval(50);
+  
+  pinMode(RETRIGGER_BUTTON, INPUT_PULLUP);
+  retriggerDebouncer.attach(RETRIGGER_BUTTON);
+  retriggerDebouncer.interval(50);
 }
 
 void handleSettingButton(int i)
@@ -426,17 +439,8 @@ void handleSettingButton(int i)
     state.mode = curmode;
     showControl("Device mode", false);
   }
-  else if (settingeditmode)
-  {
-    if (i == 0 || i == 1)
-      curArp = i;
-    else if (i == 2)
-      swapArps();
-//    sprintf(tempStr, "Current arp: %d", i + 1);
-    showTempo(tempo, state.arp[curArp].tempo_factor, state.arp[curArp].swingoffset != 0);
-  }
 //  textatrow(4, tempStr, LCD_WHITE, LCD_BLACK);
-  settingmul = settingdiv = settingdevmode = settingeditmode = false;
+  settingmul = settingdiv = settingdevmode = false;
   showState();
 }
 
@@ -450,7 +454,7 @@ void handleButton(int i, button *b)
   }
   if (i >= RANGE1_BTN && i <= RANGE4_BTN)
   {
-    if (i >= 3 && i <= 6 && (settingdevmode || settingmul || settingdiv || settingeditmode))
+    if (i >= 3 && i <= 6 && (settingdevmode || settingmul || settingdiv))
     {
       handleSettingButton(i - 3);
     }
@@ -508,6 +512,21 @@ bool panicLong = false;
 
 void checkButtons(unsigned long now)
 {
+  swapDebouncer.update();
+  if (swapDebouncer.rose())
+  {
+    swapArps();
+  }
+  
+  retriggerDebouncer.update();
+  if (retriggerDebouncer.rose())
+  {
+    arpeggiators[0].resetchord();
+    arpeggiators[0].resetnote();
+    arpeggiators[1].resetchord();
+    arpeggiators[1].resetnote();
+  }
+  
   panicDebouncer.update();
   if (!panicLong && !panicDebouncer.read() && panicDebouncer.duration() > PANIC_LONG_MILLIS)
   {
@@ -528,7 +547,7 @@ void checkButtons(unsigned long now)
       sprintf(tempStr, "Current arp: %d", curArp + 1);
       showTempo(tempo, state.arp[curArp].tempo_factor, state.arp[curArp].swingoffset != 0);
       textatrow(4, tempStr, LCD_WHITE, LCD_BLACK);
-      settingmul = settingdiv = settingdevmode = settingeditmode = false;
+      settingmul = settingdiv = settingdevmode = false;
       showState();
     }
   }
@@ -676,6 +695,14 @@ void timerFired()
 {
   clock++;
   fullclock++;
+
+  if (clock % LEDCLOCKCOUNT == 0)
+  {
+    digitalWrite(TEMPO_LED, tempoLEDstate);
+    sendClock(tempoLEDstate);
+    tempoLEDstate = !tempoLEDstate;
+  }
+  
   for (int i = 0; i < 2; ++i)
   {
     if (clock % state.arp[i].clocktrigger == 0)
@@ -749,7 +776,7 @@ void showLEDs()
       case RANGE2_BTN:
       case RANGE3_BTN:
       case RANGE4_BTN:
-        if (settingmul || settingdiv || (settingdevmode && i < RANGE4_BTN) || (settingeditmode && i < RANGE4_BTN))
+        if (settingmul || settingdiv || (settingdevmode && i < RANGE4_BTN))
         {
           d = (millis() - buttons[i].heldsince) / 150;
           expander->digitalWrite(buttons[i].led1pin, d % 2);
@@ -843,9 +870,6 @@ void showModeState()
     case DEV_MODE:
       showControl("Device mode", invert);
       break;
-    case EDIT_MODE:
-      showControl("Arp sel or swap", invert);
-      break;
   }
 }
 
@@ -909,15 +933,10 @@ void loop()
   int arp1 = arpeggiators[0].onloop(fullclock, &state);
   if (curmode == ARPBOTH && state.common.active)
     arpeggiators[1].onloop(fullclock, &state);
-
+    
   if (arp1 == ARP_NEXT)
-  {
-    digitalWrite(TEMPO_LED, tempoLEDstate);
-    tempoLEDstate = !tempoLEDstate;
-    // FIXME what should this call do for 2 arps?
     ensurevalid();
-  }
-
+  
   int checkclock = clocks[curArp];
   if (checkclock < CLOCKS_PER_BEAT - 3 && loopcount % 10 == 0)
   {

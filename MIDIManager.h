@@ -12,6 +12,7 @@ void sendNoteOn(byte channel, byte note, byte velocity);
 void sendNoteOff(byte channel, byte note, byte velocity);
 void sendPitchBend(byte channel, int bend);
 void sendControlChange(byte channel, byte number, byte value);
+void sendClock(bool state);
 
 void stoponechannel(byte channel, bool allsound);
 void stopallnotes(bool allsound);

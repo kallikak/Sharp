@@ -11,6 +11,7 @@
 
 #define CLOCKS_PER_BEAT 24
 #define CLOCKTRIGGER 12
+#define LEDCLOCKCOUNT (CLOCKS_PER_BEAT * CLOCKTRIGGER / 2)
 #define SWING_OFFSET 8
 
 #define N 50
@@ -18,10 +19,10 @@
 
 #define NUMALT 8
 #define NUMMODE 8
-#define NUMSET 8
+#define NUMSET 7
 typedef enum { NORMAL, DOUBLE, DOUBLE2, DOUBLE3, OCTAVES, RATCHET1, RATCHET2, WALK } altmode;
 typedef enum { UP, DOWN, UPDOWN, IN, OUT, INOUT, RANDOM, SHUFFLE } arpmode;
-typedef enum { DEV_MODE, CLK_MUL, CLK_DIV, SPLIT, TRANSPOSE, REPLAY, RECORD, EDIT_MODE } settingsmode;
+typedef enum { DEV_MODE, CLK_MUL, CLK_DIV, SPLIT, TRANSPOSE, REPLAY, RECORD } settingsmode;
 
 // ARPL mode: arpeggiate below split, upper note to ctrl cv and clock
 // ARPH mode: arpeggiate above split, lower note to ctrl cv and clock
