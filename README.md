@@ -3,7 +3,7 @@ Firmware source and schematics for the Sharp Dual Arpeggiator
 
 <table>
   <tr>
-    <td><img src="Pics/IMG_2171.jpg" alt="Sharp Dual Arpeggiator" width="500px"></td>
+    <td><img src="Pics/IMG_2171.JPG" alt="Sharp Dual Arpeggiator" width="500px"></td>
     <td><img src="Pics/IMG_0294.jpeg" alt="With USB keyboard" width="500px"></td>
   </tr>  
 </table>
